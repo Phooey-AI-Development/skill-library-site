@@ -1,0 +1,43 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav>
+        <a href={base || '/'} class="brand">
+          <img src={`${base}/phooeycorp-logo.png`} alt="PhooeyCorp" class="brand-logo" />
+          <span class="brand-divider"></span>
+          <span class="brand-text">AI Skill Library</span>
+        </a>
+        <span class="env-badge">PROOF OF CONCEPT</span>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="footer-content">
+        <img src={`${base}/phooeycorp-logo.png`} alt="PhooeyCorp" class="footer-logo" />
+        <p>
+          Internal POC · Skills source:
+          <a href="https://github.com/Phooey-AI-Development/AI-skills-library">AI-skills-library</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

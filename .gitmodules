@@ -1,0 +1,3 @@
+[submodule "skills-content"]
+	path = skills-content
+	url = https://github.com/Phooey-AI-Development/AI-skills-library.git

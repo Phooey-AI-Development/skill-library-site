@@ -1,0 +1,101 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import DownloadButton from '../../components/DownloadButton.tsx';
+import CopyPromptButton from '../../components/CopyPromptButton.tsx';
+import { inferTaxonomy } from '../../lib/taxonomy';
+import { slugFromEntryId } from '../../lib/slug';
+
+export async function getStaticPaths() {
+  const skills = await getCollection('skills');
+  return skills.map((skill) => ({
+    params: { slug: slugFromEntryId(skill.id) },
+    props: { skill },
+  }));
+}
+
+const { skill } = Astro.props;
+const { Content } = await render(skill);
+const base = import.meta.env.BASE_URL;
+const slug = slugFromEntryId(skill.id);
+const data = skill.data as any;
+
+const author = data.metadata?.author;
+const version = data.version ?? data.metadata?.version;
+const license = data.license;
+
+const searchText = `${slug} ${data.name ?? ''} ${data.description ?? ''}`;
+const tax = inferTaxonomy(searchText, data);
+
+const categorySlug = tax.category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+
+<Base title={`${data.name} · AI Skill Library`}>
+  <a href={base || '/'} class="detail-back">← All skills</a>
+
+  <header class="detail-header">
+    <span class={`category-chip cat-${categorySlug}`}>{tax.category}</span>
+    <h1>{data.name}</h1>
+    <p class="description">{data.description}</p>
+    <div class="detail-meta">
+      {author && <span>by <strong>{author}</strong></span>}
+      {version && <span class="version-chip">v{version}</span>}
+      {license && <span class="license-chip">{license}</span>}
+    </div>
+  </header>
+
+  <div class="detail-layout">
+    <article class="skill-content">
+      <Content />
+    </article>
+
+    <aside class="sidebar">
+      <div class="sidebar-block">
+        <h3>Install</h3>
+        <div class="sidebar-actions">
+          <DownloadButton client:load skillName={data.name} skillSlug={slug} />
+          <CopyPromptButton client:load skillName={data.name} skillSlug={slug} skillDescription={data.description} />
+        </div>
+      </div>
+
+      <div class="sidebar-block install-help">
+        <h3>How to install</h3>
+        <p class="install-mode"><strong>As a persistent skill:</strong></p>
+        <ol>
+          <li>Click <strong>Download skill ZIP</strong>.</li>
+          <li>Open <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>.</li>
+          <li>Go to <strong>Settings → Capabilities → Skills</strong>.</li>
+          <li>Click <strong>+ Create skill</strong> and upload the ZIP.</li>
+        </ol>
+        <p class="install-mode"><strong>Manual upload (copy &amp; paste):</strong></p>
+        <ol>
+          <li>Click <strong>Copy Skill</strong>.</li>
+          <li>In Claude.ai, open <strong>+ Create skill</strong>.</li>
+          <li>Use the Copy buttons to fill each field.</li>
+        </ol>
+      </div>
+
+      {tax.occupations.length > 0 && (
+        <div class="sidebar-block">
+          <h3>Occupations</h3>
+          <div class="pill-group">
+            {tax.occupations.map((o) => (
+              <a class="pill" href={`${base}/?occupation=${encodeURIComponent(o)}`}>{o}</a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tax.tags.length > 0 && (
+        <div class="sidebar-block">
+          <h3>Tags</h3>
+          <div class="pill-group">
+            {tax.tags.map((t) => (
+              <a class="pill" href={`${base}/?tag=${encodeURIComponent(t)}`}>#{t}</a>
+            ))}
+          </div>
+        </div>
+      )}
+    </aside>
+  </div>
+</Base>

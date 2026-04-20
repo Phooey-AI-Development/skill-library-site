@@ -1,17 +1,40 @@
 ---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SkillCatalog from '../components/SkillCatalog.tsx';
+import { inferTaxonomy } from '../lib/taxonomy';
+import { slugFromEntryId } from '../lib/slug';
 
+const raw = await getCollection('skills');
+const base = import.meta.env.BASE_URL;
+
+const skills = raw.map((entry) => {
+  const data = entry.data as any;
+  const slug = slugFromEntryId(entry.id);
+  const searchText = `${slug} ${data.name ?? ''} ${data.description ?? ''}`;
+  const tax = inferTaxonomy(searchText, data);
+  return {
+    slug,
+    name: data.name as string,
+    description: data.description as string,
+    author: data.metadata?.author as string | undefined,
+    version: (data.version ?? data.metadata?.version) ? String(data.version ?? data.metadata?.version) : undefined,
+    license: data.license as string | undefined,
+    category: tax.category,
+    occupations: tax.occupations,
+    tags: tax.tags,
+  };
+}).sort((a, b) => a.name.localeCompare(b.name));
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title="AI Skill Library">
+  <section class="hero">
+    <h1>AI Skill Library</h1>
+    <p class="lead">
+      Discover Claude skills curated for our team. Browse by occupation or category,
+      search by keyword, and install with one click.
+    </p>
+  </section>
+
+  <SkillCatalog client:load skills={skills} baseUrl={base} />
+</Base>

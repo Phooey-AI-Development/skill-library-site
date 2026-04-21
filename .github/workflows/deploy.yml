@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Rebuild daily so changes to the skills repo show up even if the site repo
-  # itself hasn't changed. Optional — remove if you prefer manual rebuilds.
+  # Triggered by the skills repo when a SKILL.md changes
+  repository_dispatch:
+    types: [skills-updated]
+  # Safety-net daily rebuild in case a webhook is missed
   schedule:
     - cron: '0 6 * * *'
 

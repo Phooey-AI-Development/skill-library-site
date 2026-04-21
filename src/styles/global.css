@@ -2,7 +2,7 @@
    Design tokens
    ============================================================ */
 :root {
-  /* PhooeyCorp brand palette */
+  /* PhooeyCorp brand palette — LIGHT MODE (default) */
   --bg: #faf7f0;             /* logo cream */
   --surface: #ffffff;
   --surface-2: #f2efe5;      /* cream tinted darker */
@@ -18,6 +18,8 @@
   --gold-soft: #f5ecd4;
   --warning-bg: #fef3c7;
   --warning-text: #854d0e;
+  --code-bg: #0f172a;
+  --code-fg: #e2e8f0;
   --shadow-sm: 0 1px 2px rgba(28, 58, 96, 0.06);
   --shadow-md: 0 4px 6px -1px rgba(28, 58, 96, 0.08), 0 2px 4px -2px rgba(28, 58, 96, 0.05);
   --radius-sm: 4px;
@@ -25,6 +27,41 @@
   --radius-lg: 12px;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
   --font-mono: 'SF Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+}
+
+/* DARK MODE — applied when <html data-theme="dark"> */
+:root[data-theme='dark'] {
+  --bg: #0f1419;             /* deep navy-black */
+  --surface: #1a2230;        /* slightly lifted card surface */
+  --surface-2: #232d3d;      /* input bg, chip bg */
+  --border: #2e3a4d;
+  --border-strong: #3f4e66;
+  --text: #e8ecf2;
+  --text-muted: #a0aec0;
+  --text-subtle: #8896a8;
+  --accent: #6b97d1;         /* lighter navy for dark-mode readability */
+  --accent-hover: #8ab0e0;
+  --accent-soft: rgba(107, 151, 209, 0.15);
+  --gold: #d4b878;
+  --gold-soft: rgba(212, 184, 120, 0.15);
+  --warning-bg: rgba(251, 191, 36, 0.15);
+  --warning-text: #fbbf24;
+  --code-bg: #050a12;
+  --code-fg: #e2e8f0;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+}
+
+/* Smooth transitions when toggling (but not on page load) */
+html[data-theme] body,
+html[data-theme] .site-header,
+html[data-theme] .card,
+html[data-theme] .sidebar-block,
+html[data-theme] .detail-header,
+html[data-theme] .skill-content,
+html[data-theme] .filters,
+html[data-theme] .modal {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 /* ============================================================
@@ -367,8 +404,8 @@ main {
   font-family: var(--font-mono);
 }
 .skill-content pre {
-  background: #0f172a;
-  color: #e2e8f0;
+  background: var(--code-bg);
+  color: var(--code-fg);
   padding: 1rem 1.15rem;
   border-radius: var(--radius);
   overflow-x: auto;
@@ -654,4 +691,101 @@ main {
   color: #b42318;
   border-color: #fecdca;
   background: #fef3f2;
+}
+
+/* ============================================================
+   Dark mode adjustments for hardcoded-color elements
+   ============================================================ */
+
+/* Category chips: in light mode they use pastel bg + dark text.
+   In dark mode, invert the relationship — semi-transparent tint + bright text. */
+:root[data-theme='dark'] .cat-code-development      { background: rgba(96, 165, 250, 0.18);  color: #93c5fd; }
+:root[data-theme='dark'] .cat-document-creation     { background: rgba(74, 222, 128, 0.18);  color: #86efac; }
+:root[data-theme='dark'] .cat-communication         { background: rgba(251, 191, 36, 0.18);  color: #fcd34d; }
+:root[data-theme='dark'] .cat-data-analysis         { background: rgba(236, 72, 153, 0.18);  color: #f9a8d4; }
+:root[data-theme='dark'] .cat-research              { background: rgba(167, 139, 250, 0.18); color: #c4b5fd; }
+:root[data-theme='dark'] .cat-workflow-automation   { background: rgba(251, 146, 60, 0.18);  color: #fdba74; }
+:root[data-theme='dark'] .cat-design                { background: rgba(34, 211, 238, 0.18);  color: #67e8f9; }
+:root[data-theme='dark'] .cat-productivity          { background: rgba(250, 204, 21, 0.18);  color: #fde047; }
+:root[data-theme='dark'] .cat-uncategorized         { background: var(--surface-2); color: var(--text-muted); }
+
+/* Env badge: restyle to read well on dark */
+:root[data-theme='dark'] .env-badge {
+  background: var(--gold-soft);
+  color: var(--gold);
+  border-color: rgba(212, 184, 120, 0.35);
+}
+
+/* Hero heading uses --accent, but deep navy is too dim in dark mode.
+   The accent token is already lightened in dark — no override needed. */
+
+/* Skill-content inline code: lighten the bg in dark mode */
+:root[data-theme='dark'] .skill-content code {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* Field-error + error messages use hardcoded red for contrast.
+   Lighten slightly in dark mode so they don't look radioactive. */
+:root[data-theme='dark'] .field-error {
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+/* Download button's .btn-success state (hardcoded green) — keep but tone down */
+:root[data-theme='dark'] .btn-success {
+  background: #22c55e !important;
+}
+:root[data-theme='dark'] .btn-success:hover {
+  background: #16a34a !important;
+}
+
+/* Copy-chip uses hardcoded green for the "copied" state too */
+:root[data-theme='dark'] .copy-chip.copied {
+  background: #22c55e;
+}
+
+/* Modal backdrop: darker in dark mode for clearer focus */
+:root[data-theme='dark'] .modal-backdrop {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+/* Footer logo — the PhooeyCorp logo PNG has a cream background baked in.
+   In dark mode, tone down opacity further so it doesn't jar against the dark bg. */
+:root[data-theme='dark'] .footer-logo {
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .brand-logo {
+  opacity: 0.92;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   Theme toggle button
+   ============================================================ */
+.header-spacer { flex: 1; }
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.theme-toggle:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.theme-toggle:disabled {
+  opacity: 0.4;
+  cursor: default;
 }

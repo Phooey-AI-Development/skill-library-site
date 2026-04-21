@@ -2,8 +2,10 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SkillCatalog from '../components/SkillCatalog.tsx';
+import KeyboardShortcuts from '../components/KeyboardShortcuts.tsx';
 import { inferTaxonomy } from '../lib/taxonomy';
 import { slugFromEntryId } from '../lib/slug';
+import { getSkillAddedDate, isRecent } from '../lib/git-dates';
 
 const raw = await getCollection('skills');
 const base = import.meta.env.BASE_URL;
@@ -13,6 +15,7 @@ const skills = raw.map((entry) => {
   const slug = slugFromEntryId(entry.id);
   const searchText = `${slug} ${data.name ?? ''} ${data.description ?? ''}`;
   const tax = inferTaxonomy(searchText, data);
+  const addedDate = getSkillAddedDate(slug);
   return {
     slug,
     name: data.name as string,
@@ -23,6 +26,9 @@ const skills = raw.map((entry) => {
     category: tax.category,
     occupations: tax.occupations,
     tags: tax.tags,
+    status: (data.status as 'draft' | 'approved' | 'deprecated' | undefined) ?? 'draft',
+    addedDate: addedDate ? addedDate.toISOString() : null,
+    isNew: isRecent(addedDate),
   };
 }).sort((a, b) => a.name.localeCompare(b.name));
 ---
@@ -34,7 +40,11 @@ const skills = raw.map((entry) => {
       Discover Claude skills curated for our team. Browse by occupation or category,
       search by keyword, and install with one click.
     </p>
+    <p class="kb-hint">
+      Tip: press <kbd>?</kbd> anywhere to see keyboard shortcuts.
+    </p>
   </section>
 
   <SkillCatalog client:load skills={skills} baseUrl={base} />
+  <KeyboardShortcuts client:load />
 </Base>

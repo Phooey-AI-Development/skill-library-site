@@ -2,15 +2,23 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
-// IMPORTANT: update `site` and `base` to match your GitHub Pages URL.
-// For a project page at https://phooey-ai-development.github.io/skill-library-site/
-//   site: 'https://phooey-ai-development.github.io'
-//   base: '/skill-library-site'
-// For a user/org page (repo named <org>.github.io) drop `base`.
-
 export default defineConfig({
   site: 'https://phooey-ai-development.github.io',
   base: '/skill-library-site',
   integrations: [react()],
   output: 'static',
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark-dimmed',
+      },
+      // defaultColor: false tells Shiki NOT to pick a "default" theme that
+      // gets rendered as a plain `color:` style. Instead, each token gets
+      // both --shiki-light and --shiki-dark as CSS variables, and we pick
+      // which one is active via the data-theme attribute.
+      defaultColor: false,
+      wrap: false,
+    },
+  },
 });

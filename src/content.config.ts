@@ -23,6 +23,11 @@ const skills = defineCollection({
       // allowed-tools shows up as either a space-separated string OR a YAML list
       'allowed-tools': z.union([z.string(), z.array(z.string())]).optional(),
       'user-invocable': z.boolean().optional(),
+      // Approval status — drives the badge on cards and detail pages.
+      // Defaults to 'draft' when omitted (anything not explicitly approved
+      // should look provisional). Use 'approved' only after security review.
+      status: z.enum(['draft', 'approved', 'deprecated']).optional(),
+      statusNote: z.string().optional(),
       metadata: z
         .object({
           author: z.string().optional(),

@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import DownloadButton from '../../components/DownloadButton.tsx';
 import CopyPromptButton from '../../components/CopyPromptButton.tsx';
+import ShareActions from '../../components/ShareActions.tsx';
 import { inferTaxonomy } from '../../lib/taxonomy';
 import { slugFromEntryId } from '../../lib/slug';
 
@@ -23,6 +24,8 @@ const data = skill.data as any;
 const author = data.metadata?.author;
 const version = data.version ?? data.metadata?.version;
 const license = data.license;
+const status = (data.status as 'draft' | 'approved' | 'deprecated' | undefined) ?? 'draft';
+const statusNote = data.statusNote as string | undefined;
 
 const searchText = `${slug} ${data.name ?? ''} ${data.description ?? ''}`;
 const tax = inferTaxonomy(searchText, data);
@@ -31,10 +34,24 @@ const categorySlug = tax.category.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
 ---
 
 <Base title={`${data.name} · AI Skill Library`}>
-  <a href={base || '/'} class="detail-back">← All skills</a>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href={base || '/'}>Home</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href={`${base}/?category=${encodeURIComponent(tax.category)}`}>{tax.category}</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">{data.name}</span>
+  </nav>
 
   <header class="detail-header">
-    <span class={`category-chip cat-${categorySlug}`}>{tax.category}</span>
+    <div class="detail-header-top">
+      <div class="detail-header-chips">
+        <span class={`category-chip cat-${categorySlug}`}>{tax.category}</span>
+        {status === 'approved' && <span class="badge badge-approved">✓ Approved</span>}
+        {status === 'draft' && <span class="badge badge-draft">Draft</span>}
+        {status === 'deprecated' && <span class="badge badge-deprecated">Deprecated</span>}
+      </div>
+      <ShareActions client:load skillName={data.name} skillSlug={slug} />
+    </div>
     <h1>{data.name}</h1>
     <p class="description">{data.description}</p>
     <div class="detail-meta">
@@ -42,10 +59,25 @@ const categorySlug = tax.category.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
       {version && <span class="version-chip">v{version}</span>}
       {license && <span class="license-chip">{license}</span>}
     </div>
+    {status === 'deprecated' && (
+      <div class="status-banner status-banner-deprecated">
+        <strong>This skill is deprecated.</strong>
+        {statusNote && <span> {statusNote}</span>}
+      </div>
+    )}
+    {status === 'draft' && (
+      <div class="status-banner status-banner-draft">
+        <strong>Draft.</strong> This skill is pending security review and has not been approved for production use.
+        {statusNote && <span> {statusNote}</span>}
+      </div>
+    )}
   </header>
 
   <div class="detail-layout">
-    <article class="skill-content">
+    <article class="skill-content" data-pagefind-body>
+      <div data-pagefind-meta="title" style="display:none">{data.name}</div>
+      <div data-pagefind-meta="description" style="display:none">{data.description}</div>
+      <div data-pagefind-meta="category" style="display:none">{tax.category}</div>
       <Content />
     </article>
 

@@ -1494,3 +1494,24 @@ kbd {
 .all-skills-deprecated {
   margin-bottom: 1rem;
 }
+
+/* ============================================================
+   Submit button in header
+   ============================================================ */
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.85rem;
+  background: var(--accent);
+  color: white !important;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.submit-btn:hover {
+  background: var(--accent-hover);
+  color: white;
+}

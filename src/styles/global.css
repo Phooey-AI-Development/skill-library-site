@@ -1310,3 +1310,187 @@ kbd {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ============================================================
+   Sectioned homepage layout (SkillsMP-inspired)
+   ============================================================ */
+
+/* Search bar container — no more surface box around it; let it breathe */
+.browse-search {
+  margin-bottom: 1.75rem;
+}
+
+/* Each major section: "Browse by X" / "All skills" */
+.browse-section {
+  margin-bottom: 2rem;
+}
+.browse-section:last-child {
+  margin-bottom: 0;
+}
+
+.browse-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+.browse-section-header h2 {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-mono);
+}
+.browse-count {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+}
+
+/* Category pill row */
+.browse-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.browse-pill {
+  /* Uses the existing .category-chip classes for color.
+     We override padding and add cursor/interactivity. */
+  padding: 0.4rem 0.85rem !important;
+  font-size: 0.82rem !important;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+.browse-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+.browse-pill.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* Occupation tile grid */
+.browse-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.6rem;
+}
+.browse-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.95rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  font-family: inherit;
+}
+.browse-tile:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.browse-tile.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.browse-tile-label {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+  font-weight: 500;
+}
+.browse-tile-count {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+}
+.browse-tile-unit {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  font-weight: 400;
+  margin-left: 0.35rem;
+}
+.browse-tile.is-active .browse-tile-count {
+  color: var(--accent);
+}
+
+/* "All skills" section controls (sort, clear, count) */
+.all-skills-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.all-skills-controls .sort-select {
+  min-width: auto;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+}
+.all-skills-controls .clear-btn {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+}
+.all-skills-controls .browse-count {
+  margin-left: 0.25rem;
+}
+
+/* Active filter chips (shown above the grid when filters are on) */
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--accent-soft);
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+}
+.active-filters-label {
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-right: 0.25rem;
+}
+.active-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: inherit;
+}
+.active-filter-pill:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+.active-filter-pill .pill-x {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* Move the deprecated toggle outside the filter-box, position under section */
+.all-skills-deprecated {
+  margin-bottom: 1rem;
+}

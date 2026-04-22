@@ -16,6 +16,11 @@ permissions:
   pages: write
   id-token: write
 
+# Opt into Node 24 for the action-runner internals (not our build's Node version).
+# Silences the Node-20 deprecation warning ahead of GitHub's June 2026 forced cutover.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: pages
   cancel-in-progress: false
